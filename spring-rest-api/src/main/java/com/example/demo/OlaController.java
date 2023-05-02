@@ -14,7 +14,10 @@ public class OlaController {
 	
 	@RequestMapping("/hello")
 	public olamarilene olamarilene(@RequestParam(value="name",defaultValue = "world")String name) {
+		System.out.println("oi");
+
 		return new olamarilene(counter.incrementAndGet(),String.format(template, name));
+		
 	}
 	
 }
