@@ -1,12 +1,12 @@
 package com.example.demo;
 
-public class olamarilene {
+public class Helloworld {
 
 		private final long id;
 		private final String content;
 	
 
-		public olamarilene(long id, String content) {
+		public Helloworld(long id, String content) {
 			super();
 			this.id = id;
 			this.content = content;
