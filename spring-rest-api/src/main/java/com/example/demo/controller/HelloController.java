@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.controller;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.NumberConverter;
+import com.example.demo.Math.SimpleMath;
 import com.example.demo.exceptions.UnsupportedMathOperationException;
 
 @RestController
 public class HelloController {
 	private static final String template = "hello, %s";
 	private final AtomicLong counter = new AtomicLong();
+	private SimpleMath simplemath = new SimpleMath();
 	
 	@RequestMapping( value= "/soma/{numberOne}/{numberTwo}",method=RequestMethod.GET)
 	public double somatorio(
@@ -23,10 +26,10 @@ public class HelloController {
 			@PathVariable(value="numberTwo")String numberTwo
 			)throws Exception {
 
-		if(!isNumeric(numberOne)||!isNumeric(numberTwo)) {
+		if(!NumberConverter.isNumeric(numberOne)||!NumberConverter.isNumeric(numberTwo)) {
 				throw new UnsupportedMathOperationException("Deu erro, por favor verificar os numeros:" +numberOne +"e"+numberTwo);
 		}
-		return ConverterToNumber(numberOne) + ConverterToNumber(numberTwo);
+		return  simplemath.soma(NumberConverter.ConverterToNumber(numberOne),NumberConverter.ConverterToNumber(numberTwo));
 		
 	}
 
@@ -36,11 +39,11 @@ public class HelloController {
 			@PathVariable(value="numberTwo")String numberTwo
 			)throws Exception {
 		
-		if(!isNumeric(numberOne)|| !isNumeric(numberTwo)) {
+		if(!NumberConverter.isNumeric(numberOne)|| !NumberConverter.isNumeric(numberTwo)) {
 			throw new UnsupportedMathOperationException("subtração inválida");
 		}
 		
-	return ConverterToNumber(numberOne) - ConverterToNumber(numberTwo);
+		return  simplemath.sub(NumberConverter.ConverterToNumber(numberOne),NumberConverter.ConverterToNumber(numberTwo));
 	}
 	
 	@GetMapping(value="/mult/{numberOne}/{numberTwo}")
@@ -49,11 +52,11 @@ public class HelloController {
 		@PathVariable(value="numberTwo")String numberTwo
 			)throws Exception {
 		
-		if(!isNumeric(numberOne)||!isNumeric(numberTwo)) {
+		if(!NumberConverter.isNumeric(numberOne)||!NumberConverter.isNumeric(numberTwo)) {
 			throw new UnsupportedMathOperationException("Multiplicação inválida");
 		}
 		
-		return ConverterToNumber(numberOne)* ConverterToNumber(numberTwo);
+		return  simplemath.mult(NumberConverter.ConverterToNumber(numberOne),NumberConverter.ConverterToNumber(numberTwo));
 	}
 	
 	
@@ -62,31 +65,20 @@ public class HelloController {
 	@PathVariable(value="numberOne")String numberOne,
 	@PathVariable(value="numberTwo")String numberTwo
 			)throws Exception {
-		if(!isNumeric(numberOne)|| !isNumeric(numberTwo)) {
+		if(!NumberConverter.isNumeric(numberOne)|| !NumberConverter.isNumeric(numberTwo)) {
 		  throw new UnsupportedMathOperationException ("Divisão inválida");
 		}
-		 else if(ConverterToNumber(numberTwo) <= 0) {
+		 else if(NumberConverter.ConverterToNumber(numberTwo) <= 0) {
 			 throw new UnsupportedMathOperationException("Não é possivel divisao por zero");
 		 }
 
-		return ConverterToNumber(numberOne)/ConverterToNumber(numberTwo);
+		return  simplemath.div(NumberConverter.ConverterToNumber(numberOne),NumberConverter.ConverterToNumber(numberTwo));
 	}
 	
 	
 	
-	private double ConverterToNumber(String strNumber) {
-		if(strNumber == null) return 0;
-		String number = strNumber.replaceAll(",",".");
-		if(isNumeric(number)) return Double.parseDouble(number);
-		return 0d;
-		
-	}
+	
 
-	private boolean isNumeric(String strNumber) {
-		if(strNumber == null) return false;
-		String number = strNumber.replaceAll(",",".");
-
-		return number.matches("[-+]?[0-9]*\\.?[0-9]+");
-	}
+	
 	
 }
