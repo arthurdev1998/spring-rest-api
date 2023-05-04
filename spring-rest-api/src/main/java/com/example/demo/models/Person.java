@@ -3,14 +3,29 @@ package com.example.demo.models;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name= "person")
 public class Person implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	@Id
+	@GeneratedValue(strategy= GenerationType.IDENTITY)  // auto incrementação
 	private long id;
+	@Column(name = "first_Name", nullable = false, length = 80 )
 	private String firstName; 
+	@Column(name = "Last_Name", nullable = false, length = 80)
 	private String lasttName;
-	private String address;
+	@Column(nullable = false, length = 80)
+	private String address;    //Se nao especificar o nome do Colum irá ser o nome da propriedade
+	@Column(nullable = false, length = 80)
 	private String gender;
 	
 	public Person() {
