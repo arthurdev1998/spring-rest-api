@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.data.vo.v1.PersonVo;
+import com.example.demo.data.vo.v2.PersonVoV2;
 import com.example.demo.exceptions.ResourcesNotFoundException;
 import com.example.demo.services.PersonService;
 
@@ -45,6 +46,12 @@ public class PersonController {
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public PersonVo create(@RequestBody PersonVo person) {
 		return service.create(person);
+	}
+	
+	// METODO CREATE VERSIONADO(V2)
+	@PostMapping(value="/V2",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public PersonVoV2 createV2(@RequestBody PersonVoV2 person) {
+		return service.createV2(person);
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

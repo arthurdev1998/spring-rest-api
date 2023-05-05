@@ -4,15 +4,15 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
-import org.modelmapper.ModelMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Repositories.PersonRepository;
 import com.example.demo.data.vo.v1.PersonVo;
+import com.example.demo.data.vo.v2.PersonVoV2;
 import com.example.demo.exceptions.ResourcesNotFoundException;
 import com.example.demo.mapper.DozerMapper;
+import com.example.demo.mapper.custom.PersonMapper;
 import com.example.demo.models.Person;
 
 @Service
@@ -20,6 +20,9 @@ public class PersonService {
 
 	@Autowired
 	private PersonRepository repository;
+	
+	@Autowired
+	private PersonMapper mappering;
 
 	private final AtomicLong counter = new AtomicLong();
 	private Logger logger = Logger.getLogger(PersonService.class.getName());
@@ -49,22 +52,20 @@ public class PersonService {
 	}
 
 	public PersonVo create(PersonVo person) {
-		PersonVo persones = new PersonVo();
-
-		persones.setFirstName(person.getFirstName());
-		persones.setAddress(person.getAddress());
-		persones.setGender(person.getGender());
-		persones.setLasttName(person.getLasttName());
 		
-		var entity = DozerMapper.parseObject(persones, Person.class);
-
+		var entity = DozerMapper.parseObject(person, Person.class);
 		return DozerMapper.parseObject(repository.save(entity), PersonVo.class);
+	}
+	
+	//VERSIONAMENTO CREATE V2
+	public PersonVoV2 createV2(PersonVoV2 person) {
+		var entity = mappering.ConverterVoToEntity(person);
+		return mappering.ConverterEntityToVo(repository.save(entity)); //pegue a entidade, salve ela no banco, pegue o que foi salvo e converta para VoV2
+		
 	}
 
 	public PersonVo update(PersonVo person) {
-
-		
-		
+				
 		var entity = DozerMapper.parseObject(person, Person.class);
 			var persone = repository.findById(entity.getId())
 				.orElseThrow(() -> new ResourcesNotFoundException("Pessoa nao encontrada"));
