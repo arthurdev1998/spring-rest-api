@@ -1,17 +1,18 @@
 package com.example.demo.services;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.modelmapper.ModelMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.example.demo.Repositories.PersonRepository;
+import com.example.demo.data.vo.v1.PersonVo;
 import com.example.demo.exceptions.ResourcesNotFoundException;
+import com.example.demo.mapper.DozerMapper;
 import com.example.demo.models.Person;
 
 @Service
@@ -23,48 +24,55 @@ public class PersonService {
 	private final AtomicLong counter = new AtomicLong();
 	private Logger logger = Logger.getLogger(PersonService.class.getName());
 
-	public Person findById(Long id) {
+	public PersonVo findById(Long id) {
 		logger.info("buscando ...");
 
-		Person persone = repository.findById(id)
+		var entity = repository.findById(id)
 				.orElseThrow(() -> new ResourcesNotFoundException("Pessoa nao encontrada"));
-		return persone;
+		return DozerMapper.parseObject(entity, PersonVo.class);
 
 	};
 
-	public List<Person> findAll() {
+	public List<PersonVo> findAll() {
 
-		List<Person> persons = repository.findAll();
+		
+		var entity = repository.findAll();
+		return DozerMapper.parseListObject(entity, PersonVo.class); 
+				
 //		List<Person> persons = new ArrayList<>();
 //		for(int i = 0; i<8;i++) {
 //			Person persones = MockPerson(i);
 //			persons.add(persones);
 //		}
-		return persons;
+	
 
 	}
 
-	public Person create(Person person) {
-		Person persones = new Person();
+	public PersonVo create(PersonVo person) {
+		PersonVo persones = new PersonVo();
 
 		persones.setFirstName(person.getFirstName());
 		persones.setAddress(person.getAddress());
 		persones.setGender(person.getGender());
 		persones.setLasttName(person.getLasttName());
+		
+		var entity = DozerMapper.parseObject(persones, Person.class);
 
-		return repository.save(persones);
+		return DozerMapper.parseObject(repository.save(entity), PersonVo.class);
 	}
 
-	public Person update(Person person) {
+	public PersonVo update(PersonVo person) {
 
-		Person entity = repository.findById(person.getId())
+		
+		
+		var entity = DozerMapper.parseObject(person, Person.class);
+			var persone = repository.findById(entity.getId())
 				.orElseThrow(() -> new ResourcesNotFoundException("Pessoa nao encontrada"));
-		person.setFirstName(entity.getFirstName());
-		person.setAddress(entity.getAddress());
-		person.setGender(entity.getGender());
-		person.setLasttName(entity.getLasttName());
-		repository.save(person);
-		return person;
+		persone.setFirstName(entity.getFirstName());
+		persone.setAddress(entity.getAddress());
+		persone.setGender(entity.getGender());
+		persone.setLasttName(entity.getLasttName());
+		return DozerMapper.parseObject(repository.save(persone), PersonVo.class);
 
 	}
 
