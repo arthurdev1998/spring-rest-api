@@ -20,7 +20,7 @@ import com.example.demo.data.vo.v2.PersonVoV2;
 import com.example.demo.exceptions.ResourcesNotFoundException;
 import com.example.demo.services.PersonService;
 
-@RequestMapping(value = "/person")
+@RequestMapping(value = "/v1/person")
 @RestController
 public class PersonController {
 
