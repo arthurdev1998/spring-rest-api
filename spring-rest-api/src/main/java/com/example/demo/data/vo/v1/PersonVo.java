@@ -1,57 +1,63 @@
 package com.example.demo.data.vo.v1;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Date;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 
-public class PersonVo implements Serializable {
+public class PersonVo  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 
-	private long id;
+	
+	private long key;
 	private String firstName; 
 	private String lasttName;
 	private String address;    
 	private String gender;
+	private Date birthday;
 	
 	public PersonVo() {
-		super();
+		
 	}
 	
 	
-	public long getId() {
-		return id;
+	
+	
+	
+	public long getKey() {
+		return key;
 	}
-	public void setId(long id) {
-		this.id = id;
+
+	public void setKey(long key) {
+		this.key = key;
 	}
+
+
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+
+
+	public void setBirthday(Date birthday) {
+		this.birthday = new Date();
+	}
+
+
+
+	
 	public String getFirstName() {
 		return firstName;
 	}
-	@Override
-	public int hashCode() {
-		return Objects.hash(address, firstName, gender, id, lasttName);
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		PersonVo other = (PersonVo) obj;
-		return Objects.equals(address, other.address) && Objects.equals(firstName, other.firstName)
-				&& Objects.equals(gender, other.gender) && id == other.id && Objects.equals(lasttName, other.lasttName);
-	}
-
-
+	
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
@@ -73,5 +79,30 @@ public class PersonVo implements Serializable {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(address, firstName, gender, key, lasttName);
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PersonVo other = (PersonVo) obj;
+		return Objects.equals(address, other.address) && Objects.equals(firstName, other.firstName)
+				&& Objects.equals(gender, other.gender) && key == other.key
+				&& Objects.equals(lasttName, other.lasttName);
+	}
+	
 	
 }
