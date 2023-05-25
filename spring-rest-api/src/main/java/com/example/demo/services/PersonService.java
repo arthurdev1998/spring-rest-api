@@ -9,7 +9,14 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+//Hateoas
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+
+
 import com.example.demo.Repositories.PersonRepository;
+import com.example.demo.controller.PersonController;
 import com.example.demo.data.vo.v1.PersonVo;
 import com.example.demo.data.vo.v2.PersonVoV2;
 import com.example.demo.exceptions.ResourcesNotFoundException;
@@ -33,36 +40,54 @@ public class PersonService {
 	private final AtomicLong counter = new AtomicLong();
 	private Logger logger = Logger.getLogger(PersonService.class.getName());
 
-	public PersonVo findById(Long id) {
+	public PersonVo findById(Long id) throws Exception {
+		
 		logger.info("buscando ...");
 
-		var entity = repository.findById(id)
-				.orElseThrow(() -> new ResourcesNotFoundException("Pessoa nao encontrada"));
-		return modelMapper.map(entity, PersonVo.class);
+		var entity = repository.findById(id).orElseThrow(() -> new ResourcesNotFoundException("Pessoa nao encontrada"));
+		
+		PersonVo PersonVoHateoas =  modelMapper.map(entity, PersonVo.class);
+		PersonVoHateoas.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel() );
+	
+	return PersonVoHateoas;
+	
 
 	};
 
-	public List<PersonVo> findAll() {
+	public List<PersonVo> findAll()  {
 
 		
 		var entity = repository.findAll();	
 		TypeToken<List<PersonVo>> typeToken = new TypeToken<>() {
 		};
-		return modelMapper.map(entity, typeToken.getType());
-				
-//		List<Person> persons = new ArrayList<>();
-//		for(int i = 0; i<8;i++) {
-//			Person persones = MockPerson(i);
-//			persons.add(persones);
-//		}
+		
+		List<PersonVo> PersonVoHateoas = modelMapper.map(entity, typeToken.getType());
+		PersonVoHateoas.stream().forEach(e -> {
+			try {
+				e.add(linkTo(methodOn(PersonController.class).findById(e.getKey())).withSelfRel());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		});
+		
+		return PersonVoHateoas;
+		
+		
 	
 
 	}
 
-	public PersonVo create(PersonVo person) {
+	public PersonVo create(PersonVo person){
 		
 		var entity = modelMapper.map(person, Person.class);
-		return modelMapper.map(repository.save(entity), PersonVo.class);
+		PersonVo PersonVoHateoas =  modelMapper.map(repository.save(entity), PersonVo.class);
+		try {
+			PersonVoHateoas.add(linkTo(methodOn(PersonController.class).findById(entity.getId())).withSelfRel());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return PersonVoHateoas;
 	}
 	
 	//VERSIONAMENTO CREATE V2
@@ -90,7 +115,16 @@ public class PersonService {
 		entity.setAddress(person.getAddress());
 		entity.setGender(person.getGender());
 		
-		return modelMapper.map(repository.save(entity), PersonVo.class);
+		PersonVo PersonVoHateoas = modelMapper.map(repository.save(entity), PersonVo.class);
+		try {
+			PersonVoHateoas.add(linkTo(methodOn(PersonController.class).findById(entity.getId())).withSelfRel() );
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return PersonVoHateoas;
+
 		
 		
 		

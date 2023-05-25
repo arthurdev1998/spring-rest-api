@@ -10,7 +10,7 @@ import org.springframework.hateoas.RepresentationModel;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 
-public class PersonVo  implements Serializable {
+public class PersonVo extends RepresentationModel<PersonVo> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

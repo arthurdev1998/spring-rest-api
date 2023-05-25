@@ -44,7 +44,7 @@ public class PersonController {
 	}
 
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public PersonVo create(@RequestBody PersonVo person) {
+	public PersonVo create(@RequestBody PersonVo person)  {
 		return service.create(person);
 	}
 	
