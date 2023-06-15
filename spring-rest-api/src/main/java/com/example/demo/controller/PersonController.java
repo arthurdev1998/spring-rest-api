@@ -20,6 +20,7 @@ import com.example.demo.data.vo.v2.PersonVoV2;
 import com.example.demo.exceptions.ResourcesNotFoundException;
 import com.example.demo.services.PersonService;
 
+
 @RequestMapping(value = "/v1/person")
 @RestController
 public class PersonController {
@@ -32,6 +33,7 @@ public class PersonController {
 		return service.findAll();
 
 	};
+	
 
 	@RequestMapping(value = "/{Id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public PersonVo findById(@PathVariable(value = "Id") Long id) throws Exception {
